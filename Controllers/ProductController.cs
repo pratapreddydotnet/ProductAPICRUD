@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProductAPICRUD.Data;
 using ProductAPICRUD.Models;
+using ProductAPICRUD.Repository;
+using ProductAPICRUD.Services;
 
 namespace ProductAPICRUD.Controllers
 {
@@ -11,17 +13,21 @@ namespace ProductAPICRUD.Controllers
     public class ProductController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IProductService _service;
 
-        public ProductController(AppDbContext context)
+        public ProductController(AppDbContext context, IProductService service)
         {
             _context = context;
+            _service = service;
         }
 
         // GET: api/products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _context.Products.ToListAsync();
+            var Products = await _service.GetProducts();
+            return Ok(Products);
+            //return await _context.Products.ToListAsync();
         }
 
         // GET: api/products/5
